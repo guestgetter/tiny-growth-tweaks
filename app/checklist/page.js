@@ -1,5 +1,6 @@
 'use client';
 
+// Cache bust for Netlify deployment
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { CheckCircleIcon, ChevronDownIcon, ChevronUpIcon, CalculatorIcon, StarIcon, ArrowRightOnRectangleIcon, UserIcon, ChartBarIcon } from '@heroicons/react/24/outline';
