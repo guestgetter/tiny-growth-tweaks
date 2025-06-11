@@ -121,8 +121,6 @@ export default function ChecklistPage() {
 
   const completionPercentage = Math.round((checkedTweaks.size / (restaurantTweaks?.length || 1)) * 100);
 
-  const roiData = calculateROI ? calculateROI(checkedTweaks.size, avgSpend, guestsPerDay) : { daily: 0, monthly: 0, annual: 0 };
-
   // Format numbers with commas for better readability
   const formatCurrency = (amount) => {
     return new Intl.NumberFormat('en-US', {
@@ -188,8 +186,8 @@ export default function ChecklistPage() {
         <div className="max-w-6xl mx-auto">
           <div className="grid md:grid-cols-3 gap-6">
             <div className="text-center">
-              <div className="text-3xl font-bold mb-2">{checkedTweaks.size}/50</div>
-              <div className="text-sage-200">Tweaks Implemented</div>
+              <div className="text-3xl font-bold mb-2">{checkedTweaks.size}/52</div>
+              <div className="text-sage-200">Weekly Tweaks Implemented</div>
             </div>
             <div className="text-center">
               <div className="text-3xl font-bold mb-2">{completionPercentage}%</div>
@@ -304,10 +302,10 @@ export default function ChecklistPage() {
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-16">
             <h2 className="text-4xl md:text-5xl font-bold text-sage-900 mb-6">
-              Your Growth Checklist
+              Your 52-Week Growth Plan
             </h2>
             <p className="text-xl text-sage-600 max-w-3xl mx-auto">
-              Check off tweaks as you implement them and watch your potential ROI grow. Track your progress and see real results.
+              Implement one tweak per week for a full year of sustainable growth. Check off each weekly strategy as you complete it and watch your ROI compound.
             </p>
           </div>
           
@@ -333,9 +331,14 @@ export default function ChecklistPage() {
                   <div className="flex-1 min-w-0">
                     <div className="flex items-start justify-between mb-2">
                       <div>
-                        <h3 className="text-lg font-semibold text-sage-900 mb-1">
-                          {tweak.title}
-                        </h3>
+                        <div className="flex items-center space-x-3 mb-1">
+                          <h3 className="text-lg font-semibold text-sage-900">
+                            {tweak.title}
+                          </h3>
+                          <span className="text-sm font-medium text-warm-amber-600 bg-warm-amber-100 px-2 py-1 rounded-full">
+                            Week {tweak.id}
+                          </span>
+                        </div>
                         <span className={getCategoryClass(tweak.category)}>
                           {tweak.category}
                         </span>

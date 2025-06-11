@@ -51,16 +51,16 @@ export default function LandingPage() {
     },
     {
       icon: <Clock className="w-6 h-6" />,
-      title: "Quick Implementation",
-      description: "Most tweaks can be implemented in under 30 minutes with zero additional investment"
+      title: "One Week Per Tweak",
+      description: "Manageable pace with one strategy per week. No overwhelm, just steady, sustainable growth all year long"
     }
   ];
 
   const socialProof = [
     { stat: "15-30%", label: "Average Revenue Increase" },
-    { stat: "50+", label: "Research-Backed Tweaks" },
+    { stat: "52", label: "Weekly Tweaks (Full Year)" },
     { stat: "5,000+", label: "Restaurants Transformed" },
-    { stat: "48hrs", label: "Average Implementation Time" }
+    { stat: "1 Week", label: "Per Tweak Implementation" }
   ];
 
   const testimonials = [
@@ -142,13 +142,13 @@ export default function LandingPage() {
             </div>
             
             <h1 className="text-5xl lg:text-6xl font-bold text-sage-800 mb-6 leading-tight">
-              50 Tiny Restaurant Tweaks That
-              <span className="text-amber-600 block">Increase Revenue 15-30%</span>
+              52 Tiny Restaurant Tweaks
+              <span className="text-amber-600 block">One Per Week for a Full Year</span>
             </h1>
             
             <p className="text-xl text-sage-600 mb-8 max-w-3xl mx-auto leading-relaxed">
-              Discover the science-backed micro-changes that transform struggling restaurants into profit powerhouses. 
-              Each tweak takes under 30 minutes to implement and costs nothing.
+              Transform your restaurant with one manageable, science-backed micro-change each week. 
+              52 proven strategies that increase revenue 15-30% without overwhelming your team.
             </p>
             
             <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-12">
@@ -246,10 +246,10 @@ export default function LandingPage() {
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-16">
             <h2 className="text-4xl font-bold mb-4">
-              What's Inside Your Checklist
+              Your 52-Week Transformation Plan
             </h2>
             <p className="text-xl text-sage-200 max-w-3xl mx-auto">
-              50 research-backed tweaks organized into 6 categories for maximum impact
+              52 research-backed tweaks organized into 6 categories. Implement one per week for sustainable, manageable growth.
             </p>
           </div>
           
@@ -257,8 +257,8 @@ export default function LandingPage() {
             {[
               {
                 title: "Menu Design & Psychology",
-                count: "12 Tweaks",
-                description: "Remove dollar signs, optimize descriptions, strategic positioning"
+                count: "13 Tweaks",
+                description: "Remove dollar signs, optimize descriptions, strategic naming"
               },
               {
                 title: "Pricing Strategy",
@@ -277,8 +277,8 @@ export default function LandingPage() {
               },
               {
                 title: "Customer Experience",
-                count: "6 Tweaks",
-                description: "Wait times, personalization, loyalty programs"
+                count: "7 Tweaks",
+                description: "Wait times, personalization, feedback systems"
               },
               {
                 title: "Operations & Efficiency",

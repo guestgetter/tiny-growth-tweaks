@@ -4,13 +4,13 @@ import './globals.css'
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata = {
-  title: 'Guest Getter - 50 Restaurant Growth Tweaks',
-  description: 'Discover 50 research-backed restaurant growth strategies that increase revenue 15-30%. Interactive checklist with ROI calculator.',
-  keywords: 'restaurant growth, restaurant marketing, increase revenue, restaurant tips, hospitality',
+  title: '52 Tiny Tweaks - One Restaurant Growth Strategy Each Week',
+  description: 'Transform your restaurant with 52 research-backed tiny tweaks. One manageable strategy per week for a full year of growth.',
+  keywords: 'restaurant growth, weekly restaurant tips, restaurant marketing, increase revenue, restaurant strategies, hospitality, 52 weeks',
   authors: [{ name: 'Guest Getter' }],
   openGraph: {
-    title: 'Guest Getter - 50 Restaurant Growth Tweaks',
-    description: 'Discover 50 research-backed restaurant growth strategies that increase revenue 15-30%.',
+    title: '52 Tiny Tweaks - One Restaurant Growth Strategy Each Week',
+    description: 'Transform your restaurant with 52 research-backed tiny tweaks. One manageable strategy per week for a full year of growth.',
     type: 'website',
   },
 }
