@@ -88,6 +88,18 @@ export default function ChecklistPage() {
 
   const completionPercentage = Math.round((checkedTweaks.size / restaurantTweaks.length) * 100);
 
+  const roiData = calculateROI(checkedTweaks.size, avgSpend, guestsPerDay);
+
+  // Format numbers with commas for better readability
+  const formatCurrency = (amount) => {
+    return new Intl.NumberFormat('en-US', {
+      style: 'currency',
+      currency: 'USD',
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0
+    }).format(amount);
+  };
+
   if (loading) {
     return (
       <div className="min-h-screen bg-cream-50 flex items-center justify-center">
@@ -211,7 +223,7 @@ export default function ChecklistPage() {
               <div className="bg-white rounded-lg p-4 border border-warm-amber-300">
                 <div className="text-sm text-sage-600 mb-1">Estimated Annual Increase</div>
                 <div className="text-2xl font-bold text-warm-amber-600">
-                  ${Math.round(estimatedAnnualIncrease).toLocaleString()}
+                  {formatCurrency(estimatedAnnualIncrease)}
                 </div>
                 <div className="text-sm text-sage-500">
                   {checkedTweaks.size} tweaks selected ({totalPotentialIncrease.toFixed(1)}% increase)
@@ -350,15 +362,15 @@ export default function ChecklistPage() {
                                     <div className="space-y-1">
                                       <div className="flex justify-between">
                                         <span>Daily:</span>
-                                        <span className="font-medium">${roi.dailyIncrease}</span>
+                                        <span className="font-medium">{formatCurrency(roi.dailyIncrease)}</span>
                                       </div>
                                       <div className="flex justify-between">
                                         <span>Monthly:</span>
-                                        <span className="font-medium">${roi.monthlyIncrease}</span>
+                                        <span className="font-medium">{formatCurrency(roi.monthlyIncrease)}</span>
                                       </div>
                                       <div className="flex justify-between">
                                         <span>Annual:</span>
-                                        <span className="font-bold text-warm-amber-600">${roi.annualIncrease}</span>
+                                        <span className="font-bold text-warm-amber-600">{formatCurrency(roi.annualIncrease)}</span>
                                       </div>
                                     </div>
                                   );
@@ -397,7 +409,7 @@ export default function ChecklistPage() {
               <ul className="space-y-2 text-sm text-sage-300">
                 <li>• {checkedTweaks.size} tweaks implemented</li>
                 <li>• {completionPercentage}% complete</li>
-                <li>• ${Math.round(estimatedAnnualIncrease).toLocaleString()} potential annual increase</li>
+                <li>• {formatCurrency(estimatedAnnualIncrease)} potential annual increase</li>
               </ul>
             </div>
             
