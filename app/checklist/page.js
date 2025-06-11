@@ -5,7 +5,10 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { CheckCircleIcon, ChevronDownIcon, ChevronUpIcon, CalculatorIcon, StarIcon, ArrowRightOnRectangleIcon, UserIcon, ChartBarIcon } from '@heroicons/react/24/outline';
 import { CheckCircleIcon as CheckCircleSolid } from '@heroicons/react/24/solid';
 import { useRouter } from 'next/navigation';
-import { restaurantTweaks, tweakCategories, calculateROI } from '../../data/tweaks';
+import { restaurantTweaks, tweakCategories } from '../../data/tweaks';
+
+// Force dynamic rendering for this protected page
+export const dynamic = 'force-dynamic';
 
 export default function ChecklistPage() {
   const [user, setUser] = useState(null);
@@ -18,21 +21,30 @@ export default function ChecklistPage() {
   const router = useRouter();
 
   useEffect(() => {
-    // Check authentication
+    // Check authentication - only run on client side
+    if (typeof window === 'undefined') return;
+    
     const userData = localStorage.getItem('guestGetterUser');
     if (!userData) {
       router.push('/');
       return;
     }
 
-    const parsedUser = JSON.parse(userData);
-    if (!parsedUser.isAuthenticated) {
+    try {
+      const parsedUser = JSON.parse(userData);
+      if (!parsedUser.isAuthenticated) {
+        router.push('/');
+        return;
+      }
+
+      setUser(parsedUser);
+      setCheckedTweaks(new Set(parsedUser.checkedTweaks || []));
+    } catch (error) {
+      console.error('Error parsing user data:', error);
       router.push('/');
       return;
     }
-
-    setUser(parsedUser);
-    setCheckedTweaks(new Set(parsedUser.checkedTweaks || []));
+    
     setLoading(false);
   }, [router]);
 
@@ -45,17 +57,21 @@ export default function ChecklistPage() {
     }
     setCheckedTweaks(newChecked);
     
-    // Save progress
-    const updatedUser = {
-      ...user,
-      checkedTweaks: Array.from(newChecked)
-    };
-    localStorage.setItem('guestGetterUser', JSON.stringify(updatedUser));
-    setUser(updatedUser);
+    // Save progress - only on client side
+    if (typeof window !== 'undefined' && user) {
+      const updatedUser = {
+        ...user,
+        checkedTweaks: Array.from(newChecked)
+      };
+      localStorage.setItem('guestGetterUser', JSON.stringify(updatedUser));
+      setUser(updatedUser);
+    }
   };
 
   const handleSignOut = () => {
-    localStorage.removeItem('guestGetterUser');
+    if (typeof window !== 'undefined') {
+      localStorage.removeItem('guestGetterUser');
+    }
     router.push('/');
   };
 
@@ -72,8 +88,6 @@ export default function ChecklistPage() {
       return total + percent;
     }, 0);
     
-  const estimatedAnnualIncrease = (avgSpend * (totalPotentialIncrease / 100) * guestsPerDay * 365);
-  
   const getCategoryClass = (category) => {
     const classMap = {
       'Menu Design & Psychology': 'category-menu',
@@ -88,7 +102,10 @@ export default function ChecklistPage() {
 
   const completionPercentage = Math.round((checkedTweaks.size / restaurantTweaks.length) * 100);
 
-  const roiData = calculateROI(checkedTweaks.size, avgSpend, guestsPerDay);
+  // Calculate ROI based on selected tweaks
+  const dailyIncrease = (avgSpend * (totalPotentialIncrease / 100) * guestsPerDay);
+  const monthlyIncrease = dailyIncrease * 30;
+  const annualIncrease = dailyIncrease * 365;
 
   // Format numbers with commas for better readability
   const formatCurrency = (amount) => {
@@ -223,7 +240,7 @@ export default function ChecklistPage() {
               <div className="bg-white rounded-lg p-4 border border-warm-amber-300">
                 <div className="text-sm text-sage-600 mb-1">Estimated Annual Increase</div>
                 <div className="text-2xl font-bold text-warm-amber-600">
-                  {formatCurrency(estimatedAnnualIncrease)}
+                  {formatCurrency(annualIncrease)}
                 </div>
                 <div className="text-sm text-sage-500">
                   {checkedTweaks.size} tweaks selected ({totalPotentialIncrease.toFixed(1)}% increase)
