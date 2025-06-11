@@ -1,24 +1,11 @@
 'use client';
 
-// Cache bust for Netlify deployment
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { 
-  CheckCircleIcon, 
-  ChevronDownIcon, 
-  ChevronUpIcon, 
-  CalculatorIcon, 
-  StarIcon, 
-  ArrowRightOnRectangleIcon, 
-  UserIcon, 
-  ChartBarIcon 
-} from '@heroicons/react/24/outline';
+import { CheckCircleIcon, ChevronDownIcon, ChevronUpIcon, CalculatorIcon, StarIcon, ArrowRightOnRectangleIcon, UserIcon, ChartBarIcon } from '@heroicons/react/24/outline';
 import { CheckCircleIcon as CheckCircleSolid } from '@heroicons/react/24/solid';
 import { useRouter } from 'next/navigation';
-import { restaurantTweaks, tweakCategories } from '../../data/tweaks';
-
-// Force dynamic rendering for this protected page
-export const dynamic = 'force-dynamic';
+import { restaurantTweaks, tweakCategories, calculateROI } from '../../data/tweaks';
 
 export default function ChecklistPage() {
   const [user, setUser] = useState(null);
@@ -31,36 +18,21 @@ export default function ChecklistPage() {
   const router = useRouter();
 
   useEffect(() => {
-    // Check authentication - only run on client side
-    if (typeof window === 'undefined') return;
-    
-    try {
-      const userData = localStorage.getItem('guestGetterUser');
-      if (!userData) {
-        router.push('/');
-        return;
-      }
-
-      const parsedUser = JSON.parse(userData);
-      if (!parsedUser.isAuthenticated) {
-        router.push('/');
-        return;
-      }
-
-      setUser(parsedUser);
-      setCheckedTweaks(new Set(parsedUser.checkedTweaks || []));
-    } catch (error) {
-      console.warn('localStorage not available (incognito mode?):', error);
-      // In incognito mode, allow access with a default user
-      const defaultUser = {
-        name: 'Guest User',
-        email: 'guest@example.com',
-        isAuthenticated: true,
-        checkedTweaks: []
-      };
-      setUser(defaultUser);
+    // Check authentication
+    const userData = localStorage.getItem('guestGetterUser');
+    if (!userData) {
+      router.push('/');
+      return;
     }
-    
+
+    const parsedUser = JSON.parse(userData);
+    if (!parsedUser.isAuthenticated) {
+      router.push('/');
+      return;
+    }
+
+    setUser(parsedUser);
+    setCheckedTweaks(new Set(parsedUser.checkedTweaks || []));
     setLoading(false);
   }, [router]);
 
@@ -73,35 +45,17 @@ export default function ChecklistPage() {
     }
     setCheckedTweaks(newChecked);
     
-    // Save progress - only on client side with error handling
-    if (typeof window !== 'undefined' && user) {
-      try {
-        const updatedUser = {
-          ...user,
-          checkedTweaks: Array.from(newChecked)
-        };
-        localStorage.setItem('guestGetterUser', JSON.stringify(updatedUser));
-        setUser(updatedUser);
-      } catch (storageError) {
-        console.warn('localStorage not available (incognito mode?):', storageError);
-        // Continue without persistence in incognito mode
-        setUser({
-          ...user,
-          checkedTweaks: Array.from(newChecked)
-        });
-      }
-    }
+    // Save progress
+    const updatedUser = {
+      ...user,
+      checkedTweaks: Array.from(newChecked)
+    };
+    localStorage.setItem('guestGetterUser', JSON.stringify(updatedUser));
+    setUser(updatedUser);
   };
 
   const handleSignOut = () => {
-    if (typeof window !== 'undefined') {
-      try {
-        localStorage.removeItem('guestGetterUser');
-      } catch (storageError) {
-        console.warn('localStorage not available (incognito mode?):', storageError);
-        // Continue with sign out even if localStorage fails
-      }
-    }
+    localStorage.removeItem('guestGetterUser');
     router.push('/');
   };
 
@@ -118,6 +72,8 @@ export default function ChecklistPage() {
       return total + percent;
     }, 0);
     
+  const estimatedAnnualIncrease = (avgSpend * (totalPotentialIncrease / 100) * guestsPerDay * 365);
+  
   const getCategoryClass = (category) => {
     const classMap = {
       'Menu Design & Psychology': 'category-menu',
@@ -132,10 +88,7 @@ export default function ChecklistPage() {
 
   const completionPercentage = Math.round((checkedTweaks.size / restaurantTweaks.length) * 100);
 
-  // Calculate ROI based on selected tweaks
-  const dailyIncrease = (avgSpend * (totalPotentialIncrease / 100) * guestsPerDay);
-  const monthlyIncrease = dailyIncrease * 30;
-  const annualIncrease = dailyIncrease * 365;
+  const roiData = calculateROI(checkedTweaks.size, avgSpend, guestsPerDay);
 
   // Format numbers with commas for better readability
   const formatCurrency = (amount) => {
@@ -270,7 +223,7 @@ export default function ChecklistPage() {
               <div className="bg-white rounded-lg p-4 border border-warm-amber-300">
                 <div className="text-sm text-sage-600 mb-1">Estimated Annual Increase</div>
                 <div className="text-2xl font-bold text-warm-amber-600">
-                  {formatCurrency(annualIncrease)}
+                  {formatCurrency(estimatedAnnualIncrease)}
                 </div>
                 <div className="text-sm text-sage-500">
                   {checkedTweaks.size} tweaks selected ({totalPotentialIncrease.toFixed(1)}% increase)
