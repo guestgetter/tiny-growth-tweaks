@@ -1,0 +1,157 @@
+# Restaurant Growth Tweaks - Interactive Checklist Platform
+## Product Requirements Document
+
+<context>
+# Overview  
+Restaurant Growth Tweaks is an interactive web-based checklist platform that provides data-backed, scientifically-researched behavioral economics and psychology tactics for restaurants to increase revenue. The platform combines Cornell University research, academic studies, and behavioral psychology principles to deliver actionable "tiny tweaks" that compound for massive growth.
+
+The target market includes restaurant owners, managers, and hospitality professionals seeking evidence-based strategies to increase per-head spend, table turnover, and overall revenue without major operational changes. Each tweak includes scientific citations, ROI calculators, and implementation guidance.
+
+# Core Features  
+**Interactive Checklist System**: Dynamic checklist with categorized growth tweaks that users can mark as completed, track progress, and receive recommendations based on their restaurant type and goals.
+
+**ROI Calculator per Tweak**: Individual calculators for each strategy showing potential revenue impact based on the user's average per-head spend, daily covers, and other metrics. For example, removing dollar signs from menus (8.15% increase in per-head spend according to Cornell University research).
+
+**Scientific Documentation**: Each tweak includes academic citations, research methodology, and statistical significance data from sources like Cornell University, MIT, University of Chicago, and peer-reviewed journals.
+
+**Lead Generation System**: Simple signup form capturing Name, Email, Phone, Restaurant Name, and City to serve as a lead magnet for restaurant consultants or service providers.
+
+**Category-Based Organization**: Tweaks organized into logical categories such as Menu Psychology, Pricing Strategies, Ambiance & Environment, Service Techniques, and Table Management.
+
+**Progress Tracking**: User dashboard showing completed tweaks, estimated cumulative revenue impact, and next recommended actions.
+
+# User Experience  
+**Primary User Persona**: Restaurant owners and managers (35-55 years old) who are data-driven, constantly seeking optimization opportunities, and value scientific backing for business decisions.
+
+**Key User Flow**: 
+1. Landing page with compelling value proposition and sample tweaks
+2. Lead capture form with clear benefit statement
+3. Interactive checklist dashboard with categorized tweaks
+4. Individual tweak detail pages with ROI calculator and implementation steps
+5. Progress tracking and cumulative impact visualization
+
+**UI/UX Considerations**: Clean, creative design avoiding SaaS/corporate aesthetics. Focus on visual hierarchy, engaging data visualization, and mobile-responsive design. Use restaurant-industry-appropriate imagery and color psychology.
+</context>
+
+<PRD>
+# Technical Architecture  
+
+**Frontend**: React.js or Next.js application with responsive design, featuring:
+- Interactive checklist components with state management
+- ROI calculator widgets with real-time calculations
+- Progress visualization charts and dashboards
+- Lead capture forms with validation
+- Mobile-first responsive design
+
+**Backend**: Node.js/Express API or serverless functions (Vercel/Netlify) handling:
+- User registration and authentication
+- Progress tracking and data persistence
+- Email automation and lead management
+- Analytics and usage tracking
+
+**Database**: PostgreSQL or MongoDB for storing:
+- User profiles and restaurant information
+- Checklist progress and completion status
+- ROI calculations and custom parameters
+- Analytics and engagement metrics
+
+**Third-party Integrations**:
+- Email service (Mailchimp, ConvertKit, or Sendgrid) for lead nurturing
+- Analytics platform (Google Analytics, Mixpanel) for user behavior tracking
+- Form validation and spam protection (reCAPTCHA)
+
+# Development Roadmap  
+
+**Phase 1 - MVP Lead Magnet**: 
+- Static landing page with compelling copy and sample tweaks
+- Simple lead capture form with email automation
+- Basic thank you page with access to PDF checklist
+- Core research compilation and 15-20 scientifically-backed tweaks
+
+**Phase 2 - Interactive Checklist**:
+- User dashboard with categorized tweak checklist
+- Basic progress tracking (completed/not completed)
+- Individual tweak detail pages with research citations
+- Simple ROI calculator for key tweaks (menu psychology, upselling)
+
+**Phase 3 - Advanced Calculations**:
+- Comprehensive ROI calculators for all tweaks
+- Cumulative impact visualization
+- Restaurant type customization (fine dining, casual, QSR)
+- Progress analytics and insights
+
+**Phase 4 - Enhancement & Optimization**:
+- A/B testing framework for different presentations
+- Advanced filtering and recommendation engine
+- Export functionality (PDF reports, action plans)
+- Integration with restaurant POS systems for real impact tracking
+
+# Logical Dependency Chain
+
+**Foundation First**: Research compilation, content creation, and basic website infrastructure must be completed before any interactive features.
+
+**Quick Wins**: Start with a high-converting landing page and lead capture to validate demand and begin building an audience while developing the full platform.
+
+**Progressive Enhancement**: Build core checklist functionality first, then layer on ROI calculators and advanced features. Each component should be independently valuable and build upon previous functionality.
+
+**Data-Driven Development**: Implement analytics from day one to track user engagement, conversion rates, and feature adoption to guide future development priorities.
+
+# Risks and Mitigations  
+
+**Content Quality Risk**: Ensuring all research citations are accurate and up-to-date. Mitigation: Partner with academic researchers or hire behavioral economics consultants for content validation.
+
+**User Engagement Risk**: Users may not complete the checklist or find ROI calculators too complex. Mitigation: Start with simpler interactions and progressively enhance based on user feedback.
+
+**Competition Risk**: Existing restaurant consulting firms may have similar content. Mitigation: Focus on unique interactive experience, scientific backing, and freemium model to differentiate.
+
+**Technical Complexity**: ROI calculators and progress tracking may be complex to implement accurately. Mitigation: Start with basic calculations and enhance over time based on user needs and feedback.
+
+# Research-Backed Growth Tweaks (Sample Set)
+
+**Menu Psychology Category**:
+- Remove dollar signs from menus (8.15% increase in per-head spend - Cornell University)
+- Use nested pricing (price immediately after description)
+- Implement decoy pricing strategies
+- Optimize menu layout using "Golden Triangle" eye-tracking research
+
+**Ambiance & Environment**:
+- Fast-tempo music increases table turnover by 40% (Tel Aviv University study)
+- Strategic color choices (red increases appetite, blue suppresses it)
+- Optimal lighting levels for different dining periods
+- Table positioning psychology (anchored tables vs. high-traffic areas)
+
+**Service & Upselling**:
+- Descriptive menu language increases sales by 27% (University of Illinois)
+- Staff upselling techniques with 10-30% revenue impact
+- Optimal timing for upsell suggestions
+- Reciprocity principles in service interactions
+
+**Pricing Psychology**:
+- Charm pricing effectiveness (.95 vs .99 endings)
+- Price anchoring strategies
+- Bundle deal psychology
+- Scarcity and urgency tactics
+
+# Appendix  
+
+**Research Sources**:
+- Cornell University Hotel Administration studies
+- MIT and University of Chicago pricing research
+- Tel Aviv University music tempo studies
+- Behavioral economics journals and peer-reviewed research
+- Restaurant industry case studies and statistics
+
+**Technical Specifications**:
+- Mobile-responsive design (mobile-first approach)
+- WCAG 2.1 accessibility compliance
+- Page load speeds under 3 seconds
+- Cross-browser compatibility (Chrome, Firefox, Safari, Edge)
+- SSL encryption and GDPR compliance for lead data
+
+**Success Metrics**:
+- Lead conversion rate (target: 15-25%)
+- User engagement time (target: 5+ minutes)
+- Checklist completion rate (target: 60%+)
+- ROI calculator usage (target: 40% of users)
+- Email open rates for nurture sequences (target: 25%+)
+</PRD> 

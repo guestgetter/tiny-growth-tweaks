@@ -1,0 +1,96 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+  
+  body {
+    @apply font-body text-sage-900 bg-cream-50;
+  }
+  
+  * {
+    @apply border-sage-200;
+  }
+}
+
+@layer components {
+  .btn-primary {
+    @apply bg-warm-amber-500 hover:bg-warm-amber-600 text-white font-medium px-6 py-3 rounded-lg transition-all duration-200 transform hover:scale-105 hover:shadow-lg;
+  }
+  
+  .btn-secondary {
+    @apply bg-white hover:bg-sage-50 text-sage-700 border border-sage-300 font-medium px-6 py-3 rounded-lg transition-all duration-200;
+  }
+  
+  .card {
+    @apply bg-white rounded-xl shadow-sm border border-sage-100 p-6 hover:shadow-md transition-all duration-300;
+  }
+  
+  .tweak-card {
+    @apply bg-white rounded-lg border border-sage-200 p-5 hover:shadow-lg hover:border-warm-amber-300 transition-all duration-300 cursor-pointer;
+  }
+  
+  .tweak-card.checked {
+    @apply bg-warm-amber-50 border-warm-amber-400 shadow-md;
+  }
+  
+  .category-badge {
+    @apply inline-block px-3 py-1 text-xs font-medium rounded-full;
+  }
+  
+  .category-menu {
+    @apply category-badge bg-sage-100 text-sage-700;
+  }
+  
+  .category-pricing {
+    @apply category-badge bg-warm-amber-100 text-warm-amber-700;
+  }
+  
+  .category-service {
+    @apply category-badge bg-blue-100 text-blue-700;
+  }
+  
+  .category-ambiance {
+    @apply category-badge bg-purple-100 text-purple-700;
+  }
+  
+  .category-experience {
+    @apply category-badge bg-emerald-100 text-emerald-700;
+  }
+  
+  .category-operations {
+    @apply category-badge bg-orange-100 text-orange-700;
+  }
+  
+  .gradient-text {
+    @apply bg-gradient-to-r from-warm-amber-600 to-warm-amber-400 bg-clip-text text-transparent;
+  }
+  
+  .hero-pattern {
+    background-image: 
+      radial-gradient(circle at 20% 80%, rgba(120, 113, 108, 0.1) 0%, transparent 50%),
+      radial-gradient(circle at 80% 20%, rgba(245, 158, 11, 0.1) 0%, transparent 50%),
+      radial-gradient(circle at 40% 40%, rgba(100, 119, 100, 0.05) 0%, transparent 50%);
+  }
+}
+
+@layer utilities {
+  .text-shadow {
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  
+  .animation-delay-200 {
+    animation-delay: 200ms;
+  }
+  
+  .animation-delay-400 {
+    animation-delay: 400ms;
+  }
+  
+  .animation-delay-600 {
+    animation-delay: 600ms;
+  }
+} 
