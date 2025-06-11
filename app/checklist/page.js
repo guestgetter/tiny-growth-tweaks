@@ -7,6 +7,9 @@ import { CheckCircleIcon as CheckCircleSolid } from '@heroicons/react/24/solid';
 import { useRouter } from 'next/navigation';
 import { restaurantTweaks, tweakCategories, calculateROI } from '../../data/tweaks';
 
+// Prevent static generation for this client-only page
+export const dynamic = 'force-dynamic';
+
 export default function ChecklistPage() {
   const [user, setUser] = useState(null);
   const [checkedTweaks, setCheckedTweaks] = useState(new Set());
@@ -15,28 +18,54 @@ export default function ChecklistPage() {
   const [guestsPerDay, setGuestsPerDay] = useState(100);
   const [expandedTweak, setExpandedTweak] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [mounted, setMounted] = useState(false);
   const router = useRouter();
 
+  // Prevent SSR rendering issues
+  if (typeof window === 'undefined') {
+    return (
+      <div className="min-h-screen bg-cream-50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="w-12 h-12 border-4 border-sage-600 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+          <p className="text-sage-600">Loading...</p>
+        </div>
+      </div>
+    );
+  }
+
   useEffect(() => {
-    // Check authentication
-    const userData = localStorage.getItem('guestGetterUser');
-    if (!userData) {
-      router.push('/');
-      return;
-    }
+    setMounted(true);
+    
+    // Check authentication only on client side
+    if (typeof window !== 'undefined') {
+      const userData = localStorage.getItem('guestGetterUser');
+      if (!userData) {
+        router.push('/');
+        return;
+      }
 
-    const parsedUser = JSON.parse(userData);
-    if (!parsedUser.isAuthenticated) {
-      router.push('/');
-      return;
-    }
+      try {
+        const parsedUser = JSON.parse(userData);
+        if (!parsedUser.isAuthenticated) {
+          router.push('/');
+          return;
+        }
 
-    setUser(parsedUser);
-    setCheckedTweaks(new Set(parsedUser.checkedTweaks || []));
+        setUser(parsedUser);
+        setCheckedTweaks(new Set(parsedUser.checkedTweaks || []));
+      } catch (error) {
+        console.error('Error parsing user data:', error);
+        router.push('/');
+        return;
+      }
+    }
+    
     setLoading(false);
   }, [router]);
 
   const toggleTweak = (tweakId) => {
+    if (typeof window === 'undefined' || !user) return;
+    
     const newChecked = new Set(checkedTweaks);
     if (newChecked.has(tweakId)) {
       newChecked.delete(tweakId);
@@ -55,18 +84,22 @@ export default function ChecklistPage() {
   };
 
   const handleSignOut = () => {
-    localStorage.removeItem('guestGetterUser');
+    if (typeof window !== 'undefined') {
+      localStorage.removeItem('guestGetterUser');
+    }
     router.push('/');
   };
 
+  // Ensure we have the data before filtering
   const filteredTweaks = selectedCategory === 'All' 
-    ? restaurantTweaks 
-    : restaurantTweaks.filter(tweak => tweak.category === selectedCategory);
+    ? (restaurantTweaks || [])
+    : (restaurantTweaks || []).filter(tweak => tweak && tweak.category === selectedCategory);
 
   const totalPotentialIncrease = Array.from(checkedTweaks)
-    .map(id => restaurantTweaks.find(t => t.id === id))
+    .map(id => (restaurantTweaks || []).find(t => t && t.id === id))
+    .filter(Boolean)
     .reduce((total, tweak) => {
-      if (!tweak) return total;
+      if (!tweak || !tweak.impact) return total;
       const percentMatch = tweak.impact.match(/(\d+\.?\d*)/);
       const percent = percentMatch ? parseFloat(percentMatch[1]) : 0;
       return total + percent;
@@ -86,9 +119,9 @@ export default function ChecklistPage() {
     return classMap[category] || 'category-menu';
   };
 
-  const completionPercentage = Math.round((checkedTweaks.size / restaurantTweaks.length) * 100);
+  const completionPercentage = Math.round((checkedTweaks.size / (restaurantTweaks?.length || 1)) * 100);
 
-  const roiData = calculateROI(checkedTweaks.size, avgSpend, guestsPerDay);
+  const roiData = calculateROI ? calculateROI(checkedTweaks.size, avgSpend, guestsPerDay) : { daily: 0, monthly: 0, annual: 0 };
 
   // Format numbers with commas for better readability
   const formatCurrency = (amount) => {
@@ -97,10 +130,11 @@ export default function ChecklistPage() {
       currency: 'USD',
       minimumFractionDigits: 0,
       maximumFractionDigits: 0
-    }).format(amount);
+    }).format(amount || 0);
   };
 
-  if (loading) {
+  // Don't render until mounted to avoid hydration mismatch
+  if (!mounted || loading) {
     return (
       <div className="min-h-screen bg-cream-50 flex items-center justify-center">
         <div className="text-center">
