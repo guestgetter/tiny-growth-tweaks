@@ -6,8 +6,9 @@ const inter = Inter({ subsets: ['latin'] })
 export const metadata = {
   title: '52 Tiny Tweaks - One Restaurant Growth Strategy Each Week',
   description: 'Transform your restaurant with 52 research-backed tiny tweaks. One manageable strategy per week for a full year of growth.',
-  keywords: 'restaurant growth, weekly restaurant tips, restaurant marketing, increase revenue, restaurant strategies, hospitality, 52 weeks',
-  authors: [{ name: 'Guest Getter' }],
+  keywords: 'restaurant growth, weekly restaurant tips, restaurant marketing, increase revenue, restaurant strategies, 52 tweaks',
+  authors: [{ name: 'TweakPerWeek' }],
+  metadataBase: new URL('https://tweakperweek.com'),
   openGraph: {
     title: '52 Tiny Tweaks - One Restaurant Growth Strategy Each Week',
     description: 'Transform your restaurant with 52 research-backed tiny tweaks. One manageable strategy per week for a full year of growth.',
