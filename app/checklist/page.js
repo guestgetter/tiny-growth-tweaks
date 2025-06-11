@@ -25,13 +25,13 @@ export default function ChecklistPage() {
     // Check authentication - only run on client side
     if (typeof window === 'undefined') return;
     
-    const userData = localStorage.getItem('guestGetterUser');
-    if (!userData) {
-      router.push('/');
-      return;
-    }
-
     try {
+      const userData = localStorage.getItem('guestGetterUser');
+      if (!userData) {
+        router.push('/');
+        return;
+      }
+
       const parsedUser = JSON.parse(userData);
       if (!parsedUser.isAuthenticated) {
         router.push('/');
@@ -41,9 +41,15 @@ export default function ChecklistPage() {
       setUser(parsedUser);
       setCheckedTweaks(new Set(parsedUser.checkedTweaks || []));
     } catch (error) {
-      console.error('Error parsing user data:', error);
-      router.push('/');
-      return;
+      console.warn('localStorage not available (incognito mode?):', error);
+      // In incognito mode, allow access with a default user
+      const defaultUser = {
+        name: 'Guest User',
+        email: 'guest@example.com',
+        isAuthenticated: true,
+        checkedTweaks: []
+      };
+      setUser(defaultUser);
     }
     
     setLoading(false);
@@ -58,20 +64,34 @@ export default function ChecklistPage() {
     }
     setCheckedTweaks(newChecked);
     
-    // Save progress - only on client side
+    // Save progress - only on client side with error handling
     if (typeof window !== 'undefined' && user) {
-      const updatedUser = {
-        ...user,
-        checkedTweaks: Array.from(newChecked)
-      };
-      localStorage.setItem('guestGetterUser', JSON.stringify(updatedUser));
-      setUser(updatedUser);
+      try {
+        const updatedUser = {
+          ...user,
+          checkedTweaks: Array.from(newChecked)
+        };
+        localStorage.setItem('guestGetterUser', JSON.stringify(updatedUser));
+        setUser(updatedUser);
+      } catch (storageError) {
+        console.warn('localStorage not available (incognito mode?):', storageError);
+        // Continue without persistence in incognito mode
+        setUser({
+          ...user,
+          checkedTweaks: Array.from(newChecked)
+        });
+      }
     }
   };
 
   const handleSignOut = () => {
     if (typeof window !== 'undefined') {
-      localStorage.removeItem('guestGetterUser');
+      try {
+        localStorage.removeItem('guestGetterUser');
+      } catch (storageError) {
+        console.warn('localStorage not available (incognito mode?):', storageError);
+        // Continue with sign out even if localStorage fails
+      }
     }
     router.push('/');
   };

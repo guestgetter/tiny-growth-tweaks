@@ -27,27 +27,39 @@ export default function SignupModal({ isOpen, onClose, title, subtitle, onSwitch
     e.preventDefault();
     setIsSubmitting(true);
 
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 1500));
+    try {
+      // Simulate API call
+      await new Promise(resolve => setTimeout(resolve, 1500));
 
-    // Store user data for authentication
-    const userData = {
-      ...formData,
-      isAuthenticated: true,
-      checkedTweaks: [],
-      signupDate: new Date().toISOString()
-    };
+      // Store user data for authentication
+      const userData = {
+        ...formData,
+        isAuthenticated: true,
+        checkedTweaks: [],
+        signupDate: new Date().toISOString()
+      };
 
-    // Store current user
-    localStorage.setItem('guestGetterUser', JSON.stringify(userData));
-    
-    // Also store in users array for sign-in lookup
-    const existingUsers = JSON.parse(localStorage.getItem('guestGetterUsers') || '[]');
-    const updatedUsers = [...existingUsers.filter(u => u.email !== formData.email), userData];
-    localStorage.setItem('guestGetterUsers', JSON.stringify(updatedUsers));
+      // Store current user with error handling for incognito mode
+      try {
+        localStorage.setItem('guestGetterUser', JSON.stringify(userData));
+        
+        // Also store in users array for sign-in lookup
+        const existingUsers = JSON.parse(localStorage.getItem('guestGetterUsers') || '[]');
+        const updatedUsers = [...existingUsers.filter(u => u.email !== formData.email), userData];
+        localStorage.setItem('guestGetterUsers', JSON.stringify(updatedUsers));
+      } catch (storageError) {
+        console.warn('localStorage not available (incognito mode?):', storageError);
+        // In incognito mode, we'll still redirect but without persistence
+      }
 
-    // Redirect to checklist
-    router.push('/checklist');
+      // Redirect to checklist
+      router.push('/checklist');
+    } catch (error) {
+      console.error('Signup error:', error);
+      // Handle error gracefully - could show an error message here
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const handleClose = () => {
