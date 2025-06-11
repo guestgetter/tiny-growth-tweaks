@@ -3,7 +3,16 @@
 // Cache bust for Netlify deployment
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { CheckCircleIcon, ChevronDownIcon, ChevronUpIcon, CalculatorIcon, StarIcon, ArrowRightOnRectangleIcon, UserIcon, ChartBarIcon } from '@heroicons/react/24/outline';
+import { 
+  CheckCircleIcon, 
+  ChevronDownIcon, 
+  ChevronUpIcon, 
+  CalculatorIcon, 
+  StarIcon, 
+  ArrowRightOnRectangleIcon, 
+  UserIcon, 
+  ChartBarIcon 
+} from '@heroicons/react/24/outline';
 import { CheckCircleIcon as CheckCircleSolid } from '@heroicons/react/24/solid';
 import { useRouter } from 'next/navigation';
 import { restaurantTweaks, tweakCategories } from '../../data/tweaks';
