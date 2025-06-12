@@ -58,7 +58,12 @@ export const AuthProvider = ({ children }) => {
       const { data, error } = await signUp(email, password, profileData);
       if (error) throw error;
       
-      // Note: User will need to confirm email before they can sign in
+      // Set user state immediately after successful signup
+      if (data.user) {
+        setUser(data.user);
+        await loadUserProgress(data.user.id);
+      }
+      
       return { data, error: null };
     } catch (error) {
       return { data: null, error };

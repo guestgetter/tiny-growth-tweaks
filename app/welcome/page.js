@@ -62,7 +62,7 @@ export default function WelcomePage() {
             transition={{ delay: 0.3 }}
             className="text-4xl md:text-5xl font-bold text-sage-900 mb-4"
           >
-            🎉 Welcome to Your Growth Journey!
+            🎉 Welcome Aboard!
           </motion.h1>
 
           <motion.p
@@ -71,7 +71,7 @@ export default function WelcomePage() {
             transition={{ delay: 0.4 }}
             className="text-xl text-sage-700 mb-8 max-w-2xl mx-auto"
           >
-            You now have exclusive access to <strong>52 research-backed strategies</strong> that successful restaurants use to increase revenue by an average of <strong>23%</strong>.
+            You now have access to <strong>52 research-backed strategies</strong> that successful restaurants use to increase revenue by an average of <strong>23%</strong>.
           </motion.p>
 
           {/* Value Props */}
@@ -86,7 +86,7 @@ export default function WelcomePage() {
                 <TrendingUp className="w-6 h-6 text-warm-amber-600" />
               </div>
               <h3 className="text-lg font-semibold text-sage-900 mb-2">Proven Results</h3>
-              <p className="text-sage-600 text-sm">Each tweak is backed by real restaurant data and scientific research</p>
+              <p className="text-sage-600 text-sm">Each strategy is backed by real restaurant data and research</p>
             </div>
 
             <div className="bg-white rounded-xl p-6 shadow-lg border border-sage-100">
@@ -94,15 +94,15 @@ export default function WelcomePage() {
                 <Clock className="w-6 h-6 text-green-600" />
               </div>
               <h3 className="text-lg font-semibold text-sage-900 mb-2">One Per Week</h3>
-              <p className="text-sage-600 text-sm">Implement just one tweak per week for sustainable, manageable growth</p>
+              <p className="text-sage-600 text-sm">Implement one strategy per week for sustainable, manageable growth</p>
             </div>
 
             <div className="bg-white rounded-xl p-6 shadow-lg border border-sage-100">
               <div className="inline-flex items-center justify-center w-12 h-12 bg-blue-100 rounded-lg mb-4">
                 <Users className="w-6 h-6 text-blue-600" />
               </div>
-              <h3 className="text-lg font-semibold text-sage-900 mb-2">5,000+ Restaurants</h3>
-              <p className="text-sage-600 text-sm">Join thousands of restaurant owners already seeing results</p>
+              <h3 className="text-lg font-semibold text-sage-900 mb-2">Actionable Strategies</h3>
+              <p className="text-sage-600 text-sm">Each tweak includes clear implementation steps and success metrics</p>
             </div>
           </motion.div>
 
@@ -114,6 +114,18 @@ export default function WelcomePage() {
             className="bg-white rounded-2xl p-8 shadow-xl border border-sage-100 mb-8"
           >
             <h2 className="text-2xl font-bold text-sage-900 mb-6">What's Inside Your Checklist</h2>
+            
+            {/* Progress Preview */}
+            <div className="bg-sage-50 rounded-lg p-4 mb-6">
+              <div className="flex items-center justify-between mb-2">
+                <span className="text-sm font-medium text-sage-700">Your Progress</span>
+                <span className="text-sm text-sage-500">0/52 strategies completed</span>
+              </div>
+              <div className="w-full bg-sage-200 rounded-full h-2">
+                <div className="bg-warm-amber-500 h-2 rounded-full w-0 transition-all duration-300"></div>
+              </div>
+              <p className="text-xs text-sage-500 mt-2">Ready to start improving your restaurant!</p>
+            </div>
             <div className="grid md:grid-cols-2 gap-4 text-left">
               <div className="flex items-start space-x-3">
                 <Star className="w-5 h-5 text-warm-amber-500 mt-0.5 flex-shrink-0" />
@@ -156,11 +168,11 @@ export default function WelcomePage() {
               onClick={handleGetStarted}
               className="inline-flex items-center space-x-3 bg-warm-amber-500 text-white px-8 py-4 rounded-xl hover:bg-warm-amber-600 transition-colors font-semibold text-lg shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200"
             >
-              <span>Access Your 52 Tweaks</span>
+              <span>Access Your 52 Strategies</span>
               <ArrowRight className="w-5 h-5" />
             </button>
             <p className="text-sage-500 text-sm mt-4">
-              Start with Week 1 and transform your restaurant one tweak at a time
+              Start with Week 1 and improve your restaurant one strategy at a time
             </p>
           </motion.div>
 

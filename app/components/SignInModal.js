@@ -20,10 +20,7 @@ export default function SignInModal({ isOpen, onClose, onSwitchToSignUp }) {
     setError('');
 
     try {
-      console.log('Attempting sign in with:', email);
       const { data, error: signInError } = await signIn(email, password);
-      
-      console.log('Sign in response:', { data, signInError });
       
       if (signInError) {
         console.error('Sign in error:', signInError);
