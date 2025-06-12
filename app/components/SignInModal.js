@@ -2,13 +2,16 @@
 
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Mail, ArrowRight } from 'lucide-react';
+import { X, Mail, ArrowRight, Lock } from 'lucide-react';
 import { useRouter } from 'next/navigation';
+import { useAuth } from '../../contexts/AuthContext';
 
 export default function SignInModal({ isOpen, onClose, onSwitchToSignUp }) {
   const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState('');
+  const { signIn } = useAuth();
   const router = useRouter();
 
   const handleSubmit = async (e) => {
@@ -16,28 +19,23 @@ export default function SignInModal({ isOpen, onClose, onSwitchToSignUp }) {
     setIsSubmitting(true);
     setError('');
 
-    // Simulate checking if user exists
-    await new Promise(resolve => setTimeout(resolve, 1000));
-
     try {
-      // Check if user exists in localStorage
-      const existingUsers = JSON.parse(localStorage.getItem('guestGetterUsers') || '[]');
-      const user = existingUsers.find(u => u.email.toLowerCase() === email.toLowerCase());
-
-      if (user) {
-        // Sign in the user
-        localStorage.setItem('guestGetterUser', JSON.stringify({
-          ...user,
-          isAuthenticated: true,
-          lastLogin: new Date().toISOString()
-        }));
-        
-        // Redirect to checklist
-        router.push('/checklist');
-      } else {
-        setError('No account found with this email. Please sign up first.');
+      console.log('Attempting sign in with:', email);
+      const { data, error: signInError } = await signIn(email, password);
+      
+      console.log('Sign in response:', { data, signInError });
+      
+      if (signInError) {
+        console.error('Sign in error:', signInError);
+        setError(signInError.message || 'Failed to sign in. Please check your credentials.');
+        return;
       }
+
+      // Success - close modal and redirect
+      handleClose();
+      router.push('/checklist');
     } catch (error) {
+      console.error('Unexpected error:', error);
       setError('Something went wrong. Please try again.');
     } finally {
       setIsSubmitting(false);
@@ -46,6 +44,7 @@ export default function SignInModal({ isOpen, onClose, onSwitchToSignUp }) {
 
   const handleClose = () => {
     setEmail('');
+    setPassword('');
     setError('');
     setIsSubmitting(false);
     onClose();
@@ -119,6 +118,23 @@ export default function SignInModal({ isOpen, onClose, onSwitchToSignUp }) {
                 </div>
               </div>
 
+              <div>
+                <label className="block text-sm font-medium text-sage-700 mb-2">
+                  Password
+                </label>
+                <div className="relative">
+                  <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-sage-400 w-5 h-5" />
+                  <input
+                    type="password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    className="w-full pl-10 pr-4 py-3 border border-sage-200 rounded-lg focus:ring-2 focus:ring-warm-amber-500 focus:border-warm-amber-500 transition-colors"
+                    placeholder="Enter your password"
+                    required
+                  />
+                </div>
+              </div>
+
               {error && (
                 <div className="bg-red-50 border border-red-200 rounded-lg p-3">
                   <p className="text-red-700 text-sm">{error}</p>
@@ -127,7 +143,7 @@ export default function SignInModal({ isOpen, onClose, onSwitchToSignUp }) {
 
               <button
                 type="submit"
-                disabled={isSubmitting || !email}
+                disabled={isSubmitting || !email || !password}
                 className="w-full bg-warm-amber-500 text-white py-3 px-6 rounded-lg hover:bg-warm-amber-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors font-medium flex items-center justify-center space-x-2"
               >
                 {isSubmitting ? (

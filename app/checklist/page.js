@@ -6,18 +6,17 @@ import { CheckCircleIcon, ChevronDownIcon, ChevronUpIcon, CalculatorIcon, StarIc
 import { CheckCircleIcon as CheckCircleSolid } from '@heroicons/react/24/solid';
 import { useRouter } from 'next/navigation';
 import { restaurantTweaks, tweakCategories, calculateROI } from '../../data/tweaks';
+import { useAuth } from '../../contexts/AuthContext';
 
 // Prevent static generation for this client-only page
 export const dynamic = 'force-dynamic';
 
 export default function ChecklistPage() {
-  const [user, setUser] = useState(null);
-  const [checkedTweaks, setCheckedTweaks] = useState(new Set());
+  const { user, userProgress, loading, isAuthenticated, signOut, toggleTweakCompletion } = useAuth();
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [avgSpend, setAvgSpend] = useState(25);
   const [guestsPerDay, setGuestsPerDay] = useState(100);
   const [expandedTweak, setExpandedTweak] = useState(null);
-  const [loading, setLoading] = useState(true);
   const [mounted, setMounted] = useState(false);
   const router = useRouter();
 
@@ -36,57 +35,18 @@ export default function ChecklistPage() {
   useEffect(() => {
     setMounted(true);
     
-    // Check authentication only on client side
-    if (typeof window !== 'undefined') {
-      const userData = localStorage.getItem('guestGetterUser');
-      if (!userData) {
-        router.push('/');
-        return;
-      }
-
-      try {
-        const parsedUser = JSON.parse(userData);
-        if (!parsedUser.isAuthenticated) {
-          router.push('/');
-          return;
-        }
-
-        setUser(parsedUser);
-        setCheckedTweaks(new Set(parsedUser.checkedTweaks || []));
-      } catch (error) {
-        console.error('Error parsing user data:', error);
-        router.push('/');
-        return;
-      }
+    // Redirect if not authenticated
+    if (!loading && !isAuthenticated) {
+      router.push('/');
     }
-    
-    setLoading(false);
-  }, [router]);
+  }, [loading, isAuthenticated, router]);
 
   const toggleTweak = (tweakId) => {
-    if (typeof window === 'undefined' || !user) return;
-    
-    const newChecked = new Set(checkedTweaks);
-    if (newChecked.has(tweakId)) {
-      newChecked.delete(tweakId);
-    } else {
-      newChecked.add(tweakId);
-    }
-    setCheckedTweaks(newChecked);
-    
-    // Save progress
-    const updatedUser = {
-      ...user,
-      checkedTweaks: Array.from(newChecked)
-    };
-    localStorage.setItem('guestGetterUser', JSON.stringify(updatedUser));
-    setUser(updatedUser);
+    toggleTweakCompletion(tweakId);
   };
 
-  const handleSignOut = () => {
-    if (typeof window !== 'undefined') {
-      localStorage.removeItem('guestGetterUser');
-    }
+  const handleSignOut = async () => {
+    await signOut();
     router.push('/');
   };
 
@@ -95,7 +55,7 @@ export default function ChecklistPage() {
     ? (restaurantTweaks || [])
     : (restaurantTweaks || []).filter(tweak => tweak && tweak.category === selectedCategory);
 
-  const totalPotentialIncrease = Array.from(checkedTweaks)
+  const totalPotentialIncrease = Array.from(userProgress)
     .map(id => (restaurantTweaks || []).find(t => t && t.id === id))
     .filter(Boolean)
     .reduce((total, tweak) => {
@@ -119,7 +79,7 @@ export default function ChecklistPage() {
     return classMap[category] || 'category-menu';
   };
 
-  const completionPercentage = Math.round((checkedTweaks.size / (restaurantTweaks?.length || 1)) * 100);
+  const completionPercentage = Math.round((userProgress.size / (restaurantTweaks?.length || 1)) * 100);
 
   // Format numbers with commas for better readability
   const formatCurrency = (amount) => {
@@ -162,7 +122,7 @@ export default function ChecklistPage() {
               <div className="hidden sm:flex items-center space-x-4 text-sm">
                 <div className="flex items-center space-x-2 text-sage-600">
                   <UserIcon className="w-4 h-4" />
-                  <span>Welcome, {user?.name}</span>
+                  <span>Welcome, {user?.email}</span>
                 </div>
                 <div className="flex items-center space-x-2 text-green-600">
                   <ChartBarIcon className="w-4 h-4" />
@@ -186,7 +146,7 @@ export default function ChecklistPage() {
         <div className="max-w-6xl mx-auto">
           <div className="grid md:grid-cols-3 gap-6">
             <div className="text-center">
-              <div className="text-3xl font-bold mb-2">{checkedTweaks.size}/52</div>
+              <div className="text-3xl font-bold mb-2">{userProgress.size}/52</div>
               <div className="text-sage-200">Weekly Tweaks Implemented</div>
             </div>
             <div className="text-center">
@@ -258,7 +218,7 @@ export default function ChecklistPage() {
                   {formatCurrency(estimatedAnnualIncrease)}
                 </div>
                 <div className="text-sm text-sage-500">
-                  {checkedTweaks.size} tweaks selected ({totalPotentialIncrease.toFixed(1)}% increase)
+                                      {userProgress.size} tweaks selected ({totalPotentialIncrease.toFixed(1)}% increase)
                 </div>
               </div>
             </div>
@@ -316,12 +276,12 @@ export default function ChecklistPage() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5, delay: index * 0.05 }}
-                className={`tweak-card ${checkedTweaks.has(tweak.id) ? 'checked' : ''}`}
+                                  className={`tweak-card ${userProgress.has(tweak.id) ? 'checked' : ''}`}
                 onClick={() => toggleTweak(tweak.id)}
               >
                 <div className="flex items-start space-x-4">
                   <div className="flex-shrink-0 mt-1">
-                    {checkedTweaks.has(tweak.id) ? (
+                                          {userProgress.has(tweak.id) ? (
                       <CheckCircleSolid className="w-6 h-6 text-warm-amber-500" />
                     ) : (
                       <CheckCircleIcon className="w-6 h-6 text-sage-400" />
@@ -444,7 +404,7 @@ export default function ChecklistPage() {
             <div>
               <h4 className="font-semibold mb-4">Your Progress</h4>
               <ul className="space-y-2 text-sm text-sage-300">
-                <li>• {checkedTweaks.size} tweaks implemented</li>
+                                    <li>• {userProgress.size} tweaks implemented</li>
                 <li>• {completionPercentage}% complete</li>
                 <li>• {formatCurrency(estimatedAnnualIncrease)} potential annual increase</li>
               </ul>

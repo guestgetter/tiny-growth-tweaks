@@ -2,18 +2,22 @@
 
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Mail, User, Phone, Building, MapPin, ArrowRight, CheckCircle } from 'lucide-react';
+import { X, Mail, User, Phone, Building, MapPin, ArrowRight, CheckCircle, Lock } from 'lucide-react';
 import { useRouter } from 'next/navigation';
+import { useAuth } from '../../contexts/AuthContext';
 
 export default function SignupModal({ isOpen, onClose, title, subtitle, onSwitchToSignIn }) {
   const [formData, setFormData] = useState({
     name: '',
     email: '',
+    password: '',
     phone: '',
     restaurantName: '',
     city: ''
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [error, setError] = useState('');
+  const { signUp } = useAuth();
   const router = useRouter();
 
   const handleInputChange = (e) => {
@@ -26,39 +30,45 @@ export default function SignupModal({ isOpen, onClose, title, subtitle, onSwitch
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
+    setError('');
 
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 1500));
+    try {
+      // Pass all form data to signUp function
+      const profileData = {
+        name: formData.name,
+        phone: formData.phone,
+        restaurantName: formData.restaurantName,
+        city: formData.city
+      };
+      
+      const { data, error: signUpError } = await signUp(formData.email, formData.password, profileData);
+      
+      if (signUpError) {
+        setError(signUpError.message || 'Failed to create account. Please try again.');
+        return;
+      }
 
-    // Store user data for authentication
-    const userData = {
-      ...formData,
-      isAuthenticated: true,
-      checkedTweaks: [],
-      signupDate: new Date().toISOString()
-    };
-
-    // Store current user
-    localStorage.setItem('guestGetterUser', JSON.stringify(userData));
-    
-    // Also store in users array for sign-in lookup
-    const existingUsers = JSON.parse(localStorage.getItem('guestGetterUsers') || '[]');
-    const updatedUsers = [...existingUsers.filter(u => u.email !== formData.email), userData];
-    localStorage.setItem('guestGetterUsers', JSON.stringify(updatedUsers));
-
-    // Redirect to checklist
-    router.push('/checklist');
+      // Success - close modal and redirect to welcome page
+      handleClose();
+      router.push('/welcome');
+    } catch (error) {
+      setError('Something went wrong. Please try again.');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const handleClose = () => {
     setFormData({
       name: '',
       email: '',
+      password: '',
       phone: '',
       restaurantName: '',
       city: ''
     });
     setIsSubmitting(false);
+    setError('');
     onClose();
   };
 
@@ -165,6 +175,25 @@ export default function SignupModal({ isOpen, onClose, title, subtitle, onSwitch
 
               <div>
                 <label className="block text-sm font-medium text-sage-700 mb-2">
+                  Password *
+                </label>
+                <div className="relative">
+                  <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-sage-400 w-5 h-5" />
+                  <input
+                    type="password"
+                    name="password"
+                    value={formData.password}
+                    onChange={handleInputChange}
+                    className="w-full pl-10 pr-4 py-3 border border-sage-200 rounded-lg focus:ring-2 focus:ring-warm-amber-500 focus:border-warm-amber-500 transition-colors"
+                    placeholder="Create a password"
+                    required
+                    minLength="6"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-sage-700 mb-2">
                   Phone Number
                 </label>
                 <div className="relative">
@@ -214,9 +243,15 @@ export default function SignupModal({ isOpen, onClose, title, subtitle, onSwitch
                 </div>
               </div>
 
+              {error && (
+                <div className="bg-red-50 border border-red-200 rounded-lg p-3">
+                  <p className="text-red-700 text-sm">{error}</p>
+                </div>
+              )}
+
               <button
                 type="submit"
-                disabled={isSubmitting || !formData.name || !formData.email}
+                disabled={isSubmitting || !formData.name || !formData.email || !formData.password}
                 className="w-full bg-warm-amber-500 text-white py-3 px-6 rounded-lg hover:bg-warm-amber-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors font-medium flex items-center justify-center space-x-2"
               >
                 {isSubmitting ? (
